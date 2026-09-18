@@ -1,0 +1,36 @@
+name: C/C++ CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
+    - name: get current datetime
+      run: echo "RELEASE_DATETIME=$(date +%Y%m%dT%H%MZ)" >> $GITHUB_ENV
+      shell: bash
+    - name: create release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./bin/*
+        name: ${{ env.RELEASE_DATETIME }}
+        tag_name: ${{ env.RELEASE_DATETIME }}
+        generate_release_notes: true
