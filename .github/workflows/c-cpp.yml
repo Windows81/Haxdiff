@@ -33,4 +33,3 @@ jobs:
           haxdiff.exe
         name: ${{ env.RELEASE_DATETIME }}
         tag_name: ${{ env.RELEASE_DATETIME }}
-        generate_release_notes: true
